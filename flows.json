@@ -1,0 +1,141 @@
+[
+    {
+        "id": "de566169.32a1c",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "ff381b6b.f0e498",
+        "type": "http in",
+        "z": "de566169.32a1c",
+        "name": "",
+        "url": "/feinstaub",
+        "method": "post",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 170,
+        "y": 340,
+        "wires": [
+            [
+                "aa0ae578.8781b8"
+            ]
+        ]
+    },
+    {
+        "id": "aa0ae578.8781b8",
+        "type": "jsonpath",
+        "z": "de566169.32a1c",
+        "expression": "$.sensordatavalues[*]",
+        "split": false,
+        "name": "",
+        "x": 340,
+        "y": 340,
+        "wires": [
+            [
+                "c1e3e3d6.227db"
+            ]
+        ]
+    },
+    {
+        "id": "c1e3e3d6.227db",
+        "type": "splitter",
+        "z": "de566169.32a1c",
+        "name": "",
+        "property": "payload",
+        "x": 490,
+        "y": 340,
+        "wires": [
+            [
+                "691cbfa2.a7ff5",
+                "fe56aa.90c01958"
+            ]
+        ]
+    },
+    {
+        "id": "691cbfa2.a7ff5",
+        "type": "debug",
+        "z": "de566169.32a1c",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "x": 640,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "fe56aa.90c01958",
+        "type": "function",
+        "z": "de566169.32a1c",
+        "name": "Merge value_type and value",
+        "func": "payload = msg.payload;\ntype = payload.value_type;\nvalue = payload.value;\nreturn {topic: type, payload: value}\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 660,
+        "y": 480,
+        "wires": [
+            [
+                "b35a87cf.9a22e8"
+            ]
+        ]
+    },
+    {
+        "id": "b35a87cf.9a22e8",
+        "type": "template",
+        "z": "de566169.32a1c",
+        "name": "Modify topic",
+        "field": "topic",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "feinstaub/{{topic}}",
+        "output": "str",
+        "x": 910,
+        "y": 480,
+        "wires": [
+            [
+                "4bce5ff1.89e07"
+            ]
+        ]
+    },
+    {
+        "id": "4bce5ff1.89e07",
+        "type": "mqtt out",
+        "z": "de566169.32a1c",
+        "name": "Send to MQTT",
+        "topic": "",
+        "qos": "1",
+        "retain": "true",
+        "broker": "ba604444.ef79b8",
+        "x": 1120,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "ba604444.ef79b8",
+        "type": "mqtt-broker",
+        "z": "",
+        "name": "",
+        "broker": "192.168.2.137",
+        "port": "1883",
+        "clientid": "",
+        "usetls": false,
+        "compatmode": true,
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "node-red/status",
+        "birthQos": "1",
+        "birthRetain": "true",
+        "birthPayload": "online",
+        "closeTopic": "",
+        "closePayload": "",
+        "willTopic": "node-red/status",
+        "willQos": "0",
+        "willRetain": "true",
+        "willPayload": "offline"
+    }
+]
